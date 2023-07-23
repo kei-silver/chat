@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Websocket ChatRoom</title>
@@ -12,30 +12,115 @@
         [v-cloak] {
             display: none;
         }
+
+        /* Chatroom container style */
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Chat header style */
+        .chat-header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Chat messages container style */
+        .chat-messages {
+            max-height: 700px; /* Increase this value to display more chat messages before the scrollbar appears */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Reverse the order of chat messages */
+        }
+
+        /* Each chat message style */
+        .chat-message {
+            padding: 5px; /* Reduce padding for each chat message */
+            margin-bottom: 5px;
+            border-radius: 10px;
+            font-size: 14px; /* Reduce font size for chat message text */
+        }
+
+        /* Chat input style */
+        .chat-input {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+        }
+
+        /* Sender's chat message style */
+        .chat-message-sender {
+            align-self: flex-end; /* Align the sender's message to the right side */
+            background-color: #DCF8C6; /* Light green background for the sender's message */
+        }
+
+        /* Receiver's chat message style */
+        .chat-message-receiver {
+            align-self: flex-start; /* Align the receiver's message to the left side */
+            background-color: #F2F2F2; /* Light gray background for the receiver's message */
+        }
+
+        /* Search bar style */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .search-bar button {
+            margin-left: 10px;
+        }
+
     </style>
 </head>
 <body>
 <div class="container" id="app" v-cloak>
-    <div>
-        <h2>{{room.name}}</h2>
-    </div>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <label class="input-group-text">내용</label>
+    <div class="chat-container">
+        <div class="chat-header">{{room.name}}</div>
+
+        <!-- Search bar -->
+        <div class="search-bar">
+            <input type="text" class="form-control" v-model="searchKeyword" @keyup.enter="searchMessage" placeholder="대화를 검색하세요...">
+            <button class="btn btn-primary" @click="searchMessage">검색</button>
         </div>
-        <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage">
-        <div class="input-group-append">
-            <button class="btn btn-primary" type="button" @click="sendMessage">보내기</button>
+
+        <div class="chat-messages">
+            <div :class="{'chat-message': true, 'chat-message-sender': message.senderName === senderName, 'chat-message-receiver': message.senderName !== senderName}" v-for="message in messages">
+                <strong>{{message.senderName}}</strong><br>
+                {{message.message}}<br>
+                <small>{{new Date(message.createdAt)}}</small>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage" placeholder="메시지를 입력하세요...">
+            <button class="btn btn-primary" @click="sendMessage">보내기</button>
             <button class="btn btn-success" v-if="!isSending" @click="startSending">부하 테스트 시작</button>
             <button class="btn btn-danger" v-if="isSending" @click="stopSending">중지</button>
         </div>
     </div>
-    <ul class="list-group">
-        <li class="list-group-item" v-for="message in messages">
-            {{message.senderName}} - {{message.message}} - {{new Date(message.createdAt)}}</a>
-        </li>
-    </ul>
-    <div></div>
 </div>
 <!-- JavaScript -->
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
@@ -44,6 +129,7 @@
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 
 <script>
+
     var sock = new SockJS("/ws/chat");
     var ws = Stomp.over(sock);
     var reconnect = 0;
@@ -63,6 +149,7 @@
             sequenceNumber: 0,
             messageQueue: [],
             isSending: false,
+            searchKeyword: '', // 검색어를 담을 변수 추가
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -84,46 +171,32 @@
                         type: 'COMMENT',
                         senderName: this.senderName,
                         message: this.message,
-                        sequenceNumber: this.sequenceNumber
+                        sequenceNumber: this.sequenceNumber,
+                        chatRoomId: this.roomId
                     }));
                 }else{
                     ws.send("/pub/chat/room/" + this.roomId , {}, JSON.stringify({
                         type: 'COMMENT',
                         senderName: this.senderName,
                         message: this.message,
-                        sequenceNumber: this.sequenceNumber
+                        sequenceNumber: this.sequenceNumber,
+                        chatRoomId: this.roomId
                     }));
                 }
 
                 this.message = '';
             },
             recvMessage: function (recv) {
-                const receivedSeqNumber = recv.sequenceNumber;
-                const currentSeqNumber = this.sequenceNumber;
+                this.messages.unshift({
+                    "type": recv.type,
+                    "senderName": recv.senderName,
+                    "message": recv.message,
+                    "createdAt": recv.createdAt
+                });
 
-                if (receivedSeqNumber === currentSeqNumber) {
-                    this.messages.unshift({
-                        "type": recv.type,
-                        "senderName": recv.senderName,
-                        "message": recv.message,
-                        "createdAt": recv.createdAt
-                    });
-                    this.sequenceNumber = recv.sequenceNumber;
-                } else{
-                    this.messageQueue.push(recv);
-                    console.log(this.messageQueue)
-                    this.messageQueue.sort((a, b) => a.sequenceNumber - b.sequenceNumber);
-                    while (this.messageQueue.length > 0 && this.messageQueue[0].sequenceNumber === currentSeqNumber) {
-                        const message = this.messageQueue.shift();
-                        this.messages.unshift({
-                            "type": message.type,
-                            "senderName": message.senderName,
-                            "message": message.message,
-                            "createdAt": message.createdAt
-                        });
-                        this.sequenceNumber = message.sequenceNumber;
-                    }
-                }
+                // 시퀀스 번호 업데이트
+                this.sequenceNumber = recv.sequenceNumber;
+
             },
             startSending: function () {
                 if (!this.isSending) {
@@ -160,6 +233,16 @@
                     this.isSending = false;
                     clearInterval(intervalId);
                 }
+            },
+            searchMessage: function() {
+                // 검색어에 해당하는 메시지를 서버로부터 받아와 화면에 표시하는 로직을 추가할 수 있습니다.
+                // 검색 로직을 구현하려면 서버 쪽과 API를 통해 검색 결과를 요청하고 받아와야 합니다.
+                // 이 예제에서는 검색어만을 담는 변수인 this.searchKeyword만 사용하고 있으므로,
+                // 실제로 검색 기능을 추가하려면 서버 API와의 통신 등을 구현해야 합니다.
+                console.log("검색어: " + this.searchKeyword);
+                // 여기에 검색 기능을 구현하는 로직을 추가하세요.
+                // 서버로 검색어를 전송하고, 검색 결과를 받아와서 messages 배열을 업데이트하거나
+                // 검색 결과를 따로 표시하는 방식으로 구현할 수 있습니다.
             }
         }
     });
@@ -178,11 +261,12 @@
             });
 
 
-            ws.send("/pub/chat/room/" + vm.$data.roomId, {"content-type": "application/json"}, JSON.stringify({
+            ws.send("/pub/chat/room/" + vm.$data.roomId + "/enter", {"content-type": "application/json"}, JSON.stringify({
                 type: 'ENTER',
                 senderName: vm.$data.senderName,
                 message: '',
-                sequenceNumber: 0
+                sequenceNumber: 0,
+                chatRoomId: vm.$data.roomId
             }));
 
         }, function (error) {

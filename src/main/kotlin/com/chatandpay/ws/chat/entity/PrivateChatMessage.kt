@@ -14,6 +14,8 @@ data class PrivateChatMessage(
     @Column(name = "id")
     val id: Long? = null,
 
+    var chatRoomId: Long,
+
     val message: String,
 
     val senderName: String,
@@ -26,7 +28,7 @@ data class PrivateChatMessage(
 
     val createdAt: Long = LocalDateTime.now().toEpochMillis(),
 
-    val sequenceNumber: Long
+    val sequenceNumber: Long?
 ){
     companion object {
         @JvmStatic
@@ -38,7 +40,8 @@ data class PrivateChatMessage(
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
                 createdAt = chatMessageDto.createdAt,
-                sequenceNumber = chatMessageDto.sequenceNumber
+                sequenceNumber = chatMessageDto.sequenceNumber,
+                chatRoomId = chatMessageDto.chatRoomId
             )
         }
 
@@ -50,7 +53,8 @@ data class PrivateChatMessage(
                 message = "${chatMessageDto.senderName}님이 입장했습니다.",
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
-                sequenceNumber =  chatMessageDto.sequenceNumber
+                sequenceNumber =  chatMessageDto.sequenceNumber,
+                chatRoomId = chatMessageDto.chatRoomId
             )
         }
 
