@@ -12,31 +12,33 @@ data class PrivateChatMessage(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long? = null,
+    val id: Long? = null,
 
-    var message: String,
+    val message: String,
 
     val senderName: String,
 
-    var senderId: Long,
+    val senderId: Long,
 
-    var receiverId: Long,
+    val receiverId: Long,
 
     val receiverName: String?,
 
-    var createdAt: Long = LocalDateTime.now().toEpochMillis()
+    val createdAt: Long = LocalDateTime.now().toEpochMillis(),
+
+    val sequenceNumber: Long
 ){
     companion object {
         @JvmStatic
         fun create(chatMessageDto: ChatMessageDto): PrivateChatMessage {
-            val currentTime = chatMessageDto.createdAt
             return PrivateChatMessage(
                 message = chatMessageDto.message,
                 senderId = chatMessageDto.senderId,
                 senderName = chatMessageDto.senderName,
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
-                createdAt = currentTime
+                createdAt = chatMessageDto.createdAt,
+                sequenceNumber = chatMessageDto.sequenceNumber
             )
         }
 
@@ -48,6 +50,7 @@ data class PrivateChatMessage(
                 message = "${chatMessageDto.senderName}님이 입장했습니다.",
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
+                sequenceNumber =  chatMessageDto.sequenceNumber
             )
         }
 

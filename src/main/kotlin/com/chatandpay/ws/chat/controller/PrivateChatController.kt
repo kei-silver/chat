@@ -18,7 +18,7 @@ class PrivateChatController(
     // 클라이언트의 /pub 요청을 받아 /sub 에게 보낸다
     @MessageMapping("/pub/chat/room/{roomId}")
     @SendTo("/sub/chat/room/{roomId}")
-    fun message(@DestinationVariable roomId: String,  chatMessageDto: ChatMessageDto): List<PrivateChatMessage> {
+    fun message(@DestinationVariable roomId: String,  chatMessageDto: ChatMessageDto): PrivateChatMessage {
 
         // 사용자가 접속할때마다 채팅 내역을 보여준다
         if(chatMessageDto.type == ChatMessageDto.Type.ENTER) {

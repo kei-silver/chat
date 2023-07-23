@@ -26,6 +26,8 @@
         <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage">
         <div class="input-group-append">
             <button class="btn btn-primary" type="button" @click="sendMessage">보내기</button>
+            <button class="btn btn-success" v-if="!isSending" @click="startSending">부하 테스트 시작</button>
+            <button class="btn btn-danger" v-if="isSending" @click="stopSending">중지</button>
         </div>
     </div>
     <ul class="list-group">
@@ -40,13 +42,15 @@
 <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+
 <script>
-    //alert(document.title);
-    // websocket & stomp initialize
     var sock = new SockJS("/ws/chat");
     var ws = Stomp.over(sock);
     var reconnect = 0;
-    // vue.js
+
+    var intervalId = null;
+    var isSending = false;
+
     var vm = new Vue({
         el: '#app',
         data: {
@@ -55,7 +59,10 @@
             room: {},
             senderName: '',
             message: '',
-            messages: []
+            messages: [],
+            sequenceNumber: 0,
+            messageQueue: [],
+            isSending: false,
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -70,36 +77,89 @@
                 });
             },
             sendMessage: function () {
+                this.sequenceNumber++;
 
                 if(this.type === "GROUP"){
                     ws.send("/pub/chat/room/" + this.roomId + "/type/group", {}, JSON.stringify({
                         type: 'COMMENT',
                         senderName: this.senderName,
-                        message: this.message
+                        message: this.message,
+                        sequenceNumber: this.sequenceNumber
                     }));
                 }else{
                     ws.send("/pub/chat/room/" + this.roomId , {}, JSON.stringify({
                         type: 'COMMENT',
                         senderName: this.senderName,
-                        message: this.message
+                        message: this.message,
+                        sequenceNumber: this.sequenceNumber
                     }));
                 }
 
                 this.message = '';
             },
-            recvMessage: function (recvList) {
-                //if (recv.type === 'COMMENT') {
-                recvList.map(recv => {
+            recvMessage: function (recv) {
+                const receivedSeqNumber = recv.sequenceNumber;
+                const currentSeqNumber = this.sequenceNumber;
+
+                if (receivedSeqNumber === currentSeqNumber) {
                     this.messages.unshift({
                         "type": recv.type,
                         "senderName": recv.senderName,
                         "message": recv.message,
                         "createdAt": recv.createdAt
-                    })
-                    console.log(this.messages);
-
-                })
-                //}
+                    });
+                    this.sequenceNumber = recv.sequenceNumber;
+                } else{
+                    this.messageQueue.push(recv);
+                    console.log(this.messageQueue)
+                    this.messageQueue.sort((a, b) => a.sequenceNumber - b.sequenceNumber);
+                    while (this.messageQueue.length > 0 && this.messageQueue[0].sequenceNumber === currentSeqNumber) {
+                        const message = this.messageQueue.shift();
+                        this.messages.unshift({
+                            "type": message.type,
+                            "senderName": message.senderName,
+                            "message": message.message,
+                            "createdAt": message.createdAt
+                        });
+                        this.sequenceNumber = message.sequenceNumber;
+                    }
+                }
+            },
+            startSending: function () {
+                if (!this.isSending) {
+                    this.isSending = true;
+                    var testMessages = [
+                        "Test message 1",
+                        "Test message 2",
+                        "Test message 3",
+                        "Test message 4",
+                        "Test message 5",
+                        "Test message 6",
+                        "Test message 7",
+                        "Test message 8",
+                        "Test message 9",
+                        "Test message 10"
+                    ];
+                    var count = 0;
+                    intervalId = setInterval(function () {
+                        if (count < testMessages.length) {
+                            // Send each test message from the array
+                            vm.message = testMessages[count];
+                            vm.sendMessage();
+                            count++;
+                        } else {
+                            // Stop sending messages after all test messages are sent
+                            clearInterval(intervalId);
+                            vm.isSending = false;
+                        }
+                    }, 100); // Adjust the interval time if needed (1 second = 1000 milliseconds)
+                }
+            },
+            stopSending: function () {
+                if (this.isSending) {
+                    this.isSending = false;
+                    clearInterval(intervalId);
+                }
             }
         }
     });
@@ -107,24 +167,22 @@
     function connect() {
         // pub/sub event
         ws.connect({}, function (frame) {
-        console.log(frame);
+        var subscriptionId = 'sub-' + Math.random(); // 이거 uuid로 바꾸기
             ws.subscribe("/sub/chat/room/" + vm.$data.roomId, function (message) {
                 var recv = JSON.parse(message.body);
                 console.log(recv);
                 vm.recvMessage(recv);
-            });
-
-            ws.subscribe("/sub/chat/room/" + vm.$data.roomId + "/type/group", function (message) {
-                var recv = JSON.parse(message.body);
-                console.log(recv);
-                vm.recvMessage(recv);
+            },{ id: subscriptionId,
+            // 순서 보장을 위해 소켓 옵션에 acknowledge를 명시적으로 설정 (ACK 자동 처리)
+            ack: 'auto'
             });
 
 
-            ws.send("/pub/chat/room/" + vm.$data.roomId, {}, JSON.stringify({
+            ws.send("/pub/chat/room/" + vm.$data.roomId, {"content-type": "application/json"}, JSON.stringify({
                 type: 'ENTER',
                 senderName: vm.$data.senderName,
-                message: ''
+                message: '',
+                sequenceNumber: 0
             }));
 
         }, function (error) {

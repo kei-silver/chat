@@ -12,7 +12,9 @@ data class ChatMessageDto(
     val receiverId:  Long,
     val receiverName: String?,
     val message: String,
-    val createdAt: Long = LocalDateTime.now().toEpochMillis()
+    val createdAt: Long = LocalDateTime.now().toEpochMillis(),
+    val sequenceNumber: Long // 시퀀스 번호 추가
+
 ) {
     enum class Type {
         ENTER, COMMENT

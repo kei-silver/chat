@@ -28,7 +28,13 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.postgresql:postgresql:42.2.23")
+	implementation("org.springframework.kafka:spring-kafka")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	// reactor-netty 및 netty-all 의존성 추가
+	implementation("io.projectreactor.netty:reactor-netty:1.0.31")
+	implementation("io.netty:netty-all:4.1.68.Final")
+	implementation ("org.springframework.boot:spring-boot-starter-amqp")
+
 
 //	testImplementation("org.springframework.security:spring-security-test")
 
