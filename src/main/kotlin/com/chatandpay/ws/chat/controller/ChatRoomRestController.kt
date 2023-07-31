@@ -57,7 +57,7 @@ class ChatRoomRestController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun roomInfo(
-        @PathVariable roomId: ObjectId
+        @PathVariable roomId: String
     ): ChatRoom? {
         return chatRoomService.findById(roomId)
     }

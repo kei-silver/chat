@@ -14,12 +14,10 @@ data class PrivateChatMessage(
     var id: ObjectId? = null,
 
     // 기존 속성들은 그대로 유지합니다
-    var chatRoomId: ObjectId,
+    var chatRoomId: String,
     val message: String,
     val senderName: String,
-    val senderId: ObjectId,
-    val receiverId: ObjectId,
-    val receiverName: String?,
+    val senderId: String,
     val createdAt: Long = LocalDateTime.now().toEpochMillis()
 ) {
     companion object {
@@ -29,8 +27,6 @@ data class PrivateChatMessage(
                 message = chatMessageDto.message,
                 senderId = chatMessageDto.senderId,
                 senderName = chatMessageDto.senderName,
-                receiverId = chatMessageDto.receiverId,
-                receiverName = chatMessageDto.receiverName,
                 createdAt = chatMessageDto.createdAt,
                 chatRoomId = chatMessageDto.chatRoomId
             )
@@ -42,8 +38,6 @@ data class PrivateChatMessage(
                 senderName = chatMessageDto.senderName,
                 senderId = chatMessageDto.senderId,
                 message = "${chatMessageDto.senderName}님이 입장했습니다.",
-                receiverId = chatMessageDto.receiverId,
-                receiverName = chatMessageDto.receiverName,
                 chatRoomId = chatMessageDto.chatRoomId
             )
         }

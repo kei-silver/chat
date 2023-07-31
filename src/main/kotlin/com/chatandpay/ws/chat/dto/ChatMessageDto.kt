@@ -8,13 +8,11 @@ import java.util.UUID
 
 data class ChatMessageDto(
     val type: Type,
-    val chatRoomId: ObjectId,
+    val chatRoomId: String,
     val senderName: String,
-    val senderId: ObjectId,
-    val receiverId:  ObjectId,
-    val receiverName: String?,
+    val senderId: String,
     val message: String,
-    val createdAt: Long = LocalDateTime.now().toEpochMillis()
+    val createdAt: Long
 
 ) {
     enum class Type {

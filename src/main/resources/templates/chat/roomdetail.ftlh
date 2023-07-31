@@ -169,24 +169,29 @@
                 if(this.type === "GROUP"){
                     ws.send("/pub/chat/room/" + this.roomId + "/type/group", {}, JSON.stringify({
                         type: 'COMMENT',
+                        senderId: 1, // *****
                         senderName: this.senderName,
                         message: this.message,
                         sequenceNumber: this.sequenceNumber,
-                        chatRoomId: this.roomId
+                        chatRoomId: this.roomId,
+                        createdAt: Date.now()
                     }));
                 }else{
                     ws.send("/pub/chat/room/" + this.roomId , {}, JSON.stringify({
                         type: 'COMMENT',
+                        senderId: 1, // *****
                         senderName: this.senderName,
                         message: this.message,
                         sequenceNumber: this.sequenceNumber,
-                        chatRoomId: this.roomId
+                        chatRoomId: this.roomId,
+                        createdAt: Date.now()
                     }));
                 }
 
                 this.message = '';
             },
             recvMessage: function (recv) {
+
                 this.messages.unshift({
                     "type": recv.type,
                     "senderName": recv.senderName,
@@ -194,8 +199,8 @@
                     "createdAt": recv.createdAt
                 });
 
-                // 시퀀스 번호 업데이트
-                this.sequenceNumber = recv.sequenceNumber;
+                // createdAt 값으로 내림차순 정렬
+                this.messages.sort((a, b) => b.createdAt - a.createdAt);
 
             },
             startSending: function () {
@@ -225,15 +230,17 @@
                             clearInterval(intervalId);
                             vm.isSending = false;
                         }
-                    }, 100); // Adjust the interval time if needed (1 second = 1000 milliseconds)
+                    }, 10); // Adjust the interval time if needed (1 second = 1000 milliseconds)
                 }
             },
+
             stopSending: function () {
                 if (this.isSending) {
                     this.isSending = false;
                     clearInterval(intervalId);
                 }
             },
+
             searchMessage: function() {
                 // 검색어에 해당하는 메시지를 서버로부터 받아와 화면에 표시하는 로직을 추가할 수 있습니다.
                 // 검색 로직을 구현하려면 서버 쪽과 API를 통해 검색 결과를 요청하고 받아와야 합니다.
@@ -250,6 +257,8 @@
     function connect() {
         // pub/sub event
         ws.connect({}, function (frame) {
+        console.log(frame);
+
         var subscriptionId = 'sub-' + Math.random(); // 이거 uuid로 바꾸기
             ws.subscribe("/sub/chat/room/" + vm.$data.roomId, function (message) {
                 var recv = JSON.parse(message.body);
@@ -263,10 +272,12 @@
 
             ws.send("/pub/chat/room/" + vm.$data.roomId + "/enter", {"content-type": "application/json"}, JSON.stringify({
                 type: 'ENTER',
+                senderId: 1, // *****
                 senderName: vm.$data.senderName,
                 message: '',
                 sequenceNumber: 0,
-                chatRoomId: vm.$data.roomId
+                chatRoomId: vm.$data.roomId,
+                createdAt: Date.now()
             }));
 
         }, function (error) {

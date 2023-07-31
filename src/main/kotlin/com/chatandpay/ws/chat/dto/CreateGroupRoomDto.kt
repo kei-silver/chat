@@ -16,11 +16,11 @@ data class CreateGroupChatRoomDto(
     val type: ChatRoom.Type,
 
     @field:NotNull(message = "Type cannot be null")
-    val chatUserIds: List<ObjectId>
+    val chatUserIds: List<String>
 )
 //
 data class UserChatRoomDto(
-    val chatUserId: ObjectId,
-    val chatRoomId: ObjectId,
+    val chatUserId: String,
+    val chatRoomId: String,
 )
 

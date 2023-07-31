@@ -37,8 +37,8 @@ class ChatMessageService (
 //        chatMessageDto.sequenceNumber = sequenceNumber?.plus(1)
         // 채팅방 기록이 없다면 최초 입장으로 파악 -> 입장했습니다 메시지 반환
 
-        val chatMessage = PrivateChatMessage.create(chatMessageDto)
-        privateChatMessageRepository.save(chatMessage)
+//        val chatMessage = PrivateChatMessage.create(chatMessageDto)
+//        privateChatMessageRepository.save(chatMessage)
 
 
         return PrivateChatMessage.createEnterMessage(chatMessageDto)

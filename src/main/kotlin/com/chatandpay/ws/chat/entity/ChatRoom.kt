@@ -5,12 +5,15 @@ import com.chatandpay.ws.utils.toEpochMillis
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.data.mongodb.core.mapping.FieldType
 import java.time.LocalDateTime
 
 @Document(collection = "ChatRoom")
 data class ChatRoom(
     @Id
-    var id: ObjectId? = null,
+    @Field("_id", targetType = FieldType.OBJECT_ID)
+    var id: String? = null,
 
     var name: String,
 

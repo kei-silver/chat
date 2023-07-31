@@ -12,14 +12,14 @@ data class UserChatRoom(
     var id: ObjectId? = null,
 
     // 기존 속성들은 그대로 유지합니다
-    val chatUserId: ObjectId?,
-    val chatRoomId: ObjectId?,
+    val chatUserId: String?,
+    val chatRoomId: String?,
     val createdAt: Long = LocalDateTime.now().toEpochMillis()
 ) {
 
     companion object {
         @JvmStatic
-        fun create(chatRoomId: ObjectId?, chatUserId: ObjectId?): UserChatRoom {
+        fun create(chatRoomId: String?, chatUserId: String?): UserChatRoom {
             return UserChatRoom(chatRoomId = chatRoomId, chatUserId = chatUserId)
         }
     }

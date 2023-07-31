@@ -28,7 +28,7 @@ class ChatRoomService(
         return chatRooms
     }
 
-    fun findById(id: ObjectId): ChatRoom? {
+    fun findById(id: String): ChatRoom? {
         val optionalChatRoom: Optional<ChatRoom> = chatRoomRepository.findById(id)
         println(optionalChatRoom)
         return optionalChatRoom.orElse(null)
@@ -40,7 +40,13 @@ class ChatRoomService(
                 name = chatRoomDto.name,
                 type = chatRoomDto.type
             )
-            return chatRoomRepository.save(chatRoom)
+            val saved = chatRoomRepository.save(chatRoom)
+            val id = saved.id.toString()
+            println(saved.id);
+
+            return  saved
+
+
         } catch (e: Exception) { e.printStackTrace()
             throw ChatRoomCreationException("Failed to create private chat room : ", e)
         }
