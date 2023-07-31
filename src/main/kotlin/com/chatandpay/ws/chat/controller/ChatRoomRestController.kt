@@ -6,6 +6,7 @@ import com.chatandpay.ws.chat.entity.ChatRoom
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import com.chatandpay.ws.chat.service.ChatRoomService
+import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -56,7 +57,7 @@ class ChatRoomRestController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun roomInfo(
-        @PathVariable roomId: Long
+        @PathVariable roomId: ObjectId
     ): ChatRoom? {
         return chatRoomService.findById(roomId)
     }

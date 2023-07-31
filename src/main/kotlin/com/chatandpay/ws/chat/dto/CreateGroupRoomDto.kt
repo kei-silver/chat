@@ -1,6 +1,7 @@
 package com.chatandpay.ws.chat.dto
 
 import com.chatandpay.ws.chat.entity.ChatRoom
+import org.bson.types.ObjectId
 import org.springframework.validation.annotation.Validated
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -15,11 +16,11 @@ data class CreateGroupChatRoomDto(
     val type: ChatRoom.Type,
 
     @field:NotNull(message = "Type cannot be null")
-    val chatUserIds: List<Long>
+    val chatUserIds: List<ObjectId>
 )
 //
 data class UserChatRoomDto(
-    val chatUserId: Long,
-    val chatRoomId: Long,
+    val chatUserId: ObjectId,
+    val chatRoomId: ObjectId,
 )
 

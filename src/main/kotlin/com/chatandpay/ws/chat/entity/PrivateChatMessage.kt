@@ -2,34 +2,26 @@ package com.chatandpay.ws.chat.entity
 
 import com.chatandpay.ws.chat.dto.ChatMessageDto
 import com.chatandpay.ws.utils.toEpochMillis
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 import javax.persistence.*
 
 
-@Entity
-@Table(name = "PrivateChatMessage")
+@Document(collection = "PrivateChatMessage")
 data class PrivateChatMessage(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    val id: Long? = null,
+    var id: ObjectId? = null,
 
-    var chatRoomId: Long,
-
+    // 기존 속성들은 그대로 유지합니다
+    var chatRoomId: ObjectId,
     val message: String,
-
     val senderName: String,
-
-    val senderId: Long,
-
-    val receiverId: Long,
-
+    val senderId: ObjectId,
+    val receiverId: ObjectId,
     val receiverName: String?,
-
-    val createdAt: Long = LocalDateTime.now().toEpochMillis(),
-
-    val sequenceNumber: Long?
-){
+    val createdAt: Long = LocalDateTime.now().toEpochMillis()
+) {
     companion object {
         @JvmStatic
         fun create(chatMessageDto: ChatMessageDto): PrivateChatMessage {
@@ -40,7 +32,6 @@ data class PrivateChatMessage(
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
                 createdAt = chatMessageDto.createdAt,
-                sequenceNumber = chatMessageDto.sequenceNumber,
                 chatRoomId = chatMessageDto.chatRoomId
             )
         }
@@ -53,7 +44,6 @@ data class PrivateChatMessage(
                 message = "${chatMessageDto.senderName}님이 입장했습니다.",
                 receiverId = chatMessageDto.receiverId,
                 receiverName = chatMessageDto.receiverName,
-                sequenceNumber =  chatMessageDto.sequenceNumber,
                 chatRoomId = chatMessageDto.chatRoomId
             )
         }

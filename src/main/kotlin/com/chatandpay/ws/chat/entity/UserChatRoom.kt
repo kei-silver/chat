@@ -1,26 +1,25 @@
 package com.chatandpay.ws.chat.entity
 
 import com.chatandpay.ws.utils.toEpochMillis
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 import javax.persistence.*
 
-@Entity
-@Table(name = "UserChatRoom")
-class UserChatRoom(
+@Document(collection = "UserChatRoom")
+data class UserChatRoom(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    val id: Long? = null,
+    var id: ObjectId? = null,
 
-    val chatUserId: Long?,
-
-    val chatRoomId: Long?,
-
+    // 기존 속성들은 그대로 유지합니다
+    val chatUserId: ObjectId?,
+    val chatRoomId: ObjectId?,
     val createdAt: Long = LocalDateTime.now().toEpochMillis()
-){
+) {
+
     companion object {
         @JvmStatic
-        fun create(chatRoomId: Long?, chatUserId: Long?): UserChatRoom {
+        fun create(chatRoomId: ObjectId?, chatUserId: ObjectId?): UserChatRoom {
             return UserChatRoom(chatRoomId = chatRoomId, chatUserId = chatUserId)
         }
     }

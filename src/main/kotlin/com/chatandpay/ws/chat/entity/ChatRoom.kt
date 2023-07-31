@@ -2,24 +2,20 @@ package com.chatandpay.ws.chat.entity
 
 
 import com.chatandpay.ws.utils.toEpochMillis
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
 
-@Entity(name = "ChatRoom")
+@Document(collection = "ChatRoom")
 data class ChatRoom(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var id: Long? = null,
+    var id: ObjectId? = null,
 
-    @Column(name = "name", nullable = false)
     var name: String,
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
     var type: Type,
 
-    @Column(name = "createdAt", nullable = false)
     var createdAt: Long = LocalDateTime.now().toEpochMillis()
 ) {
     enum class Type {
@@ -32,15 +28,4 @@ data class ChatRoom(
             return ChatRoom(name = name, type = type)
         }
     }
-
 }
-
-
-
-
-//data class ChatRoom(
-//    val name: String
-//) {
-//    val id: String
-//        get() = "room_$name"
-//}

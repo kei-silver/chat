@@ -2,19 +2,19 @@ package com.chatandpay.ws.chat.dto
 
 
 import com.chatandpay.ws.utils.toEpochMillis
+import org.bson.types.ObjectId
 import java.time.LocalDateTime
 import java.util.UUID
 
 data class ChatMessageDto(
     val type: Type,
-    val chatRoomId: Long,
+    val chatRoomId: ObjectId,
     val senderName: String,
-    val senderId: Long,
-    val receiverId:  Long,
+    val senderId: ObjectId,
+    val receiverId:  ObjectId,
     val receiverName: String?,
     val message: String,
-    val createdAt: Long = LocalDateTime.now().toEpochMillis(),
-    var sequenceNumber: Long? // 시퀀스 번호 추가
+    val createdAt: Long = LocalDateTime.now().toEpochMillis()
 
 ) {
     enum class Type {

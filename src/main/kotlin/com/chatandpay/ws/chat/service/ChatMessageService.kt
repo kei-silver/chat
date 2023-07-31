@@ -7,13 +7,11 @@ import com.chatandpay.ws.chat.entity.GroupChatMessage
 import com.chatandpay.ws.chat.entity.PrivateChatMessage
 import com.chatandpay.ws.chat.repository.GroupChatMessageRepository
 import com.chatandpay.ws.chat.repository.PrivateChatMessageRepository
-import com.chatandpay.ws.chat.repository.PrivateChatMessageRepositoryImpl
 import org.springframework.stereotype.Service
 
 @Service
 class ChatMessageService (
     private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val privateChatMessageRepositoryImpl: PrivateChatMessageRepositoryImpl,
     private val groupChatMessageRepository:GroupChatMessageRepository
     ){
 
@@ -34,9 +32,9 @@ class ChatMessageService (
 //            }
 //        }
 
-        // 접속했을때 시퀀스번호를 조회하고 할당함
-        val sequenceNumber = privateChatMessageRepositoryImpl.findLatestSequenceNumberByChatRoomId(chatMessageDto.chatRoomId);
-        chatMessageDto.sequenceNumber = sequenceNumber?.plus(1)
+//        // 접속했을때 시퀀스번호를 조회하고 할당함
+//        val sequenceNumber = privateChatMessageRepository.findLatestSequenceNumberByChatRoomId(chatMessageDto.chatRoomId);
+//        chatMessageDto.sequenceNumber = sequenceNumber?.plus(1)
         // 채팅방 기록이 없다면 최초 입장으로 파악 -> 입장했습니다 메시지 반환
 
         val chatMessage = PrivateChatMessage.create(chatMessageDto)

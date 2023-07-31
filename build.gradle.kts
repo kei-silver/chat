@@ -47,6 +47,8 @@ dependencies {
 	implementation("org.webjars:stomp-websocket:2.3.3-1")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-commandline:8.0.3")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 
 //
 //	implementation("com.fasterxml.uuid:java-uuid-generator:3.2.0")

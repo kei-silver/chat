@@ -2,16 +2,14 @@ package com.chatandpay.ws.chat.entity
 
 import com.chatandpay.ws.chat.dto.GroupChatMessageDto
 import com.chatandpay.ws.utils.toEpochMillis
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
 
-
-@Entity
+@Document(collection = "GroupChatMessage")
 data class GroupChatMessage(
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    var id: String? = null,
 
     var chatRoomId: Long,
 
@@ -23,7 +21,6 @@ data class GroupChatMessage(
 
     var createdAt: Long = LocalDateTime.now().toEpochMillis()
 ) {
-
     companion object {
         @JvmStatic
         fun create(chatRoomId: Long, groupChatMessageDto: GroupChatMessageDto): GroupChatMessage {
@@ -35,8 +32,4 @@ data class GroupChatMessage(
             )
         }
     }
-
-
-
-
 }

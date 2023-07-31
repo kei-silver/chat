@@ -1,27 +1,16 @@
 package com.chatandpay.ws.chat.repository
 
 import com.chatandpay.ws.chat.entity.PrivateChatMessage
+import org.bson.types.ObjectId
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.Query
 import javax.persistence.EntityManager
 import javax.persistence.TypedQuery
 
 
-interface PrivateChatMessageRepository : JpaRepository<PrivateChatMessage, Long> {
-
-//    fun findBySenderId(senderId: Long): List<PrivateChatMessage>
-
+interface PrivateChatMessageRepository : MongoRepository<PrivateChatMessage, ObjectId> {
+//    @Query("SELECT MAX(cm.sequenceNumber) FROM PrivateChatMessage cm WHERE cm.chatRoomId = ?1")
+//    fun findLatestSequenceNumberByChatRoomId(chatRoomId: ObjectId?): ObjectId?
 }
 
-class PrivateChatMessageRepositoryImpl(private val entityManager: EntityManager){
-
-    // chatRoomId에 해당하는 데이터 중 가장 큰 시퀀스 넘버 조회
-    fun findLatestSequenceNumberByChatRoomId(chatRoomId: Long?): Long? {
-        println(chatRoomId);
-        val query: TypedQuery<Long?> = entityManager.createQuery(
-            "SELECT MAX(cm.sequenceNumber) FROM PrivateChatMessage cm " +
-                    "WHERE cm.chatRoomId = :chatRoomId", Long::class.javaObjectType
-        )
-        query.setParameter("chatRoomId", chatRoomId)
-        return query.singleResult
-    }
-}

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service
 import com.chatandpay.ws.chat.entity.ChatRoom
 import com.chatandpay.ws.chat.entity.UserChatRoom
 import com.chatandpay.ws.chat.repository.ChatRoomRepository
-import com.chatandpay.ws.chat.repository.UserChatRoomInBulkRepository
 import com.chatandpay.ws.chat.repository.UserChatRoomRepository
+import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -17,8 +17,7 @@ import javax.transaction.Transactional
 @Service
 class ChatRoomService(
     private val chatRoomRepository: ChatRoomRepository,
-    private val userChatRoomRepository: UserChatRoomRepository,
-    private val userChatRoomInBulkRepository: UserChatRoomInBulkRepository
+    private val userChatRoomRepository: UserChatRoomRepository
 ) {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -29,7 +28,7 @@ class ChatRoomService(
         return chatRooms
     }
 
-    fun findById(id: Long): ChatRoom? {
+    fun findById(id: ObjectId): ChatRoom? {
         val optionalChatRoom: Optional<ChatRoom> = chatRoomRepository.findById(id)
         println(optionalChatRoom)
         return optionalChatRoom.orElse(null)
@@ -63,7 +62,7 @@ class ChatRoomService(
                 UserChatRoom.create(chatRoomId = chatRoom.id, chatUserId = userId);
             }
 
-            userChatRoomInBulkRepository.saveAll(groupUsers);
+            userChatRoomRepository.saveAll(groupUsers);
 
             return chatRoom;
 
