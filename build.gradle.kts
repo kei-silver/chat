@@ -73,13 +73,6 @@ jib {
 
 }
 
-flyway {
-	url = "jdbc:postgresql://localhost:5432/chat"
-	user = "chat"
-	password = "chat"
-}
-
-
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
