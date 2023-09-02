@@ -1,18 +1,17 @@
 package com.chatandpay.ws.chat.service
 
-import com.chatandpay.ws.chat.dto.CreateGroupChatRoomDto
-import com.chatandpay.ws.chat.dto.CreateRoomRequest
+import com.chatandpay.ws.chat.dto.ChatRoomDto
+import com.chatandpay.ws.chat.dto.GroupChatRoomDto
 import org.springframework.stereotype.Service
 import com.chatandpay.ws.chat.entity.ChatRoom
 import com.chatandpay.ws.chat.entity.UserChatRoom
 import com.chatandpay.ws.chat.repository.ChatRoomRepository
 import com.chatandpay.ws.chat.repository.UserChatRoomRepository
-import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ResponseStatus
 import java.util.*
-import javax.transaction.Transactional
 
 @Service
 class ChatRoomService(
@@ -34,17 +33,15 @@ class ChatRoomService(
         return optionalChatRoom.orElse(null)
     }
 
-    fun createPrivateChatRoom(chatRoomDto: CreateRoomRequest): ChatRoom {
+    fun createPrivateChatRoom(chatRoomDto: ChatRoomDto): ChatRoom {
         try {
             val chatRoom = ChatRoom.create(
                 name = chatRoomDto.name,
                 type = chatRoomDto.type
             )
             val saved = chatRoomRepository.save(chatRoom)
-            val id = saved.id.toString()
-            println(saved.id);
-
-            return  saved
+            
+            return saved
 
 
         } catch (e: Exception) { e.printStackTrace()
@@ -54,10 +51,9 @@ class ChatRoomService(
 
     // 그룹 유저 저장 - 채팅방 정보 / 채팅방 유저 정보 저장
     @Transactional()
-    fun createGroupChatRoom(groupChatRoomDto: CreateGroupChatRoomDto): ChatRoom{
+    fun createGroupChatRoom(groupChatRoomDto: GroupChatRoomDto): ChatRoom{
 
         try {
-            println(groupChatRoomDto);
             val groupChatRoom = ChatRoom.create(
                 name = groupChatRoomDto.name,
                 type = groupChatRoomDto.type

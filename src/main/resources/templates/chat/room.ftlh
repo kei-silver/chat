@@ -64,7 +64,7 @@
         },
         methods: {
             findAllRoom: function () {
-                axios.get('/api/v1/chat/room').then(response => {
+                axios.get('/api/chat/room').then(response => {
                     console.log(response.data)
                     this.chatrooms = response.data;
                 });
@@ -83,10 +83,10 @@
                         type: this.room_type
                     };
 
-                    let url = '/api/v1/chat/room';
+                    let url = '/api/chat/room';
 
                     if (this.room_type === 'GROUP') {
-                      url = '/api/v1/chat/room/type/group'; // GROUP일 경우 다른 API 호출
+                      url = '/api/chat/room/type/group'; // GROUP일 경우 다른 API 호출
                       let members = [1,Math.floor(Math.random() * 100),Math.floor(Math.random() * 100)]; //본인 포함 멤버 아이디
                       data.chatUserIds = members;
                     }

@@ -159,7 +159,7 @@
         },
         methods: {
             findRoom: function () {
-                axios.get('/api/v1/chat/room/' + this.roomId).then(response => {
+                axios.get('/api/chat/room/' + this.roomId).then(response => {
                     this.room = response.data;
                 });
             },
@@ -260,7 +260,7 @@
         console.log(frame);
 
         var subscriptionId = 'sub-' + Math.random(); // 이거 uuid로 바꾸기
-            ws.subscribe("/sub/chat/room/" + vm.$data.roomId, function (message) {
+            ws.subscribe("/topic/group", function (message) {
                 var recv = JSON.parse(message.body);
                 console.log(recv);
                 vm.recvMessage(recv);

@@ -36,6 +36,7 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-amqp")
 
 
+
 //	testImplementation("org.springframework.security:spring-security-test")
 
 

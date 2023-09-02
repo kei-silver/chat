@@ -1,10 +1,6 @@
 package com.chatandpay.ws.chat.dto
 
 
-import com.chatandpay.ws.utils.toEpochMillis
-import org.bson.types.ObjectId
-import java.time.LocalDateTime
-import java.util.UUID
 
 data class ChatMessageDto(
     val type: Type,
@@ -17,6 +13,22 @@ data class ChatMessageDto(
 ) {
     enum class Type {
         ENTER, COMMENT
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun createEnterMessage(chatMessageDto: ChatMessageDto): ChatMessageDto {
+            return ChatMessageDto(
+                senderName = chatMessageDto.senderName,
+                senderId = chatMessageDto.senderId,
+                message = "${chatMessageDto.senderName}님이 입장했습니다.",
+                chatRoomId = chatMessageDto.chatRoomId,
+                type = Type.ENTER,
+                createdAt = chatMessageDto.createdAt
+            )
+        }
+
     }
 }
 

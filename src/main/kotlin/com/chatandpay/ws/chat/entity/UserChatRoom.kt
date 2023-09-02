@@ -2,9 +2,10 @@ package com.chatandpay.ws.chat.entity
 
 import com.chatandpay.ws.utils.toEpochMillis
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
+
 
 @Document(collection = "UserChatRoom")
 data class UserChatRoom(

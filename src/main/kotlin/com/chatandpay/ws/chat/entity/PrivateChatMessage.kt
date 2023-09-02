@@ -3,13 +3,14 @@ package com.chatandpay.ws.chat.entity
 import com.chatandpay.ws.chat.dto.ChatMessageDto
 import com.chatandpay.ws.utils.toEpochMillis
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
+
 
 
 @Document(collection = "PrivateChatMessage")
-data class PrivateChatMessage(
+data class ChatMessage(
     @Id
     var id: ObjectId? = null,
 
@@ -22,8 +23,8 @@ data class PrivateChatMessage(
 ) {
     companion object {
         @JvmStatic
-        fun create(chatMessageDto: ChatMessageDto): PrivateChatMessage {
-            return PrivateChatMessage(
+        fun create(chatMessageDto: ChatMessageDto): ChatMessage {
+            return ChatMessage(
                 message = chatMessageDto.message,
                 senderId = chatMessageDto.senderId,
                 senderName = chatMessageDto.senderName,
@@ -33,8 +34,8 @@ data class PrivateChatMessage(
         }
 
         @JvmStatic
-        fun createEnterMessage(chatMessageDto: ChatMessageDto): PrivateChatMessage {
-            return PrivateChatMessage(
+        fun createEnterMessage(chatMessageDto: ChatMessageDto): ChatMessage {
+            return ChatMessage(
                 senderName = chatMessageDto.senderName,
                 senderId = chatMessageDto.senderId,
                 message = "${chatMessageDto.senderName}님이 입장했습니다.",

@@ -2,25 +2,27 @@ package com.chatandpay.ws.chat.service
 
 
 import com.chatandpay.ws.chat.dto.ChatMessageDto
-import com.chatandpay.ws.chat.dto.GroupChatMessageDto
-import com.chatandpay.ws.chat.entity.GroupChatMessage
-import com.chatandpay.ws.chat.entity.PrivateChatMessage
-import com.chatandpay.ws.chat.repository.GroupChatMessageRepository
-import com.chatandpay.ws.chat.repository.PrivateChatMessageRepository
+import com.chatandpay.ws.chat.entity.ChatMessage
+import com.chatandpay.ws.chat.repository.ChatMessageRepository
+import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Service
+
+
+
 
 @Service
 class ChatMessageService (
-    private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val groupChatMessageRepository:GroupChatMessageRepository
+    private val chatMessageRepository: ChatMessageRepository,
+    private val mongoTemplate: MongoTemplate
     ){
 
-    fun savePrivateChatMessage(chatMessageDto: ChatMessageDto) {
-        val chatMessage = PrivateChatMessage.create(chatMessageDto)
-        privateChatMessageRepository.save(chatMessage)
+
+    fun saveChatMessage(chatMessageDto: ChatMessageDto) {
+        val chatMessage = ChatMessage.create(chatMessageDto)
+        chatMessageRepository.save(chatMessage)
     }
 
-    fun getChatMessagesByRoomId(chatMessageDto: ChatMessageDto):PrivateChatMessage {
+    fun getChatMessagesByRoomId(chatMessageDto: ChatMessageDto):ChatMessage {
 
 //        // 채팅방의 모든 채팅 기록 조회 -********** -> 시퀀스 번호 별로 마지막 10개 뽑아서 보여줘야함
 //        val chatMessages = privateChatMessageRepository.findBySenderId(chatMessageDto.senderId)
@@ -41,23 +43,15 @@ class ChatMessageService (
 //        privateChatMessageRepository.save(chatMessage)
 
 
-        return PrivateChatMessage.createEnterMessage(chatMessageDto)
+        return ChatMessage.createEnterMessage(chatMessageDto)
 
     }
 
 
-    fun getChatMessage(chatMessageDto: ChatMessageDto):PrivateChatMessage  {
-        return PrivateChatMessage.create(chatMessageDto)
+    fun getChatMessage(chatMessageDto: ChatMessageDto): ChatMessage  {
+        return ChatMessage.create(chatMessageDto)
     }
 
 
-    fun saveGroupMessage(chatRoomId:Long,groupChatMessageDto: GroupChatMessageDto):List<GroupChatMessage> {
-        try {
-            val groupChatMessage = GroupChatMessage.create(chatRoomId,groupChatMessageDto);
-            return listOf(groupChatMessageRepository.save(groupChatMessage));
-        } catch (e: Exception) { e.printStackTrace()
-            throw ChatRoomService.ChatRoomCreationException("Failed to create chat room", e)
-        }
-    }
 
 }
