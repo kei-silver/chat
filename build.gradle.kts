@@ -4,7 +4,7 @@ plugins {
 	id("org.springframework.boot") version "2.7.11"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
 	id("com.google.cloud.tools.jib") version "3.1.2"
-	id("org.flywaydb.flyway") version "8.0.3"
+
 
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
@@ -21,19 +21,18 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.postgresql:postgresql:42.2.23")
 	implementation("org.springframework.kafka:spring-kafka")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	// reactor-netty 및 netty-all 의존성 추가
 	implementation("io.projectreactor.netty:reactor-netty:1.0.31")
 	implementation("io.netty:netty-all:4.1.68.Final")
 	implementation ("org.springframework.boot:spring-boot-starter-amqp")
+//	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.7")
 
 
 
@@ -46,9 +45,13 @@ dependencies {
 	implementation("org.webjars.bower:axios:0.17.1")
 	implementation("org.webjars:sockjs-client:1.1.2")
 	implementation("org.webjars:stomp-websocket:2.3.3-1")
-	implementation("org.flywaydb:flyway-core")
-	implementation("org.flywaydb:flyway-commandline:8.0.3")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.session:spring-session-data-redis")
+	implementation("io.lettuce:lettuce-core:6.2.6.RELEASE")
+//	implementation("org.springframework.boot:spring-boot-starter-security")
+
+
 
 
 //

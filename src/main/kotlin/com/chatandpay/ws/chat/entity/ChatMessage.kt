@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 
 
-@Document(collection = "PrivateChatMessage")
+@Document(collection = "ChatMessage")
 data class ChatMessage(
     @Id
     var id: ObjectId? = null,

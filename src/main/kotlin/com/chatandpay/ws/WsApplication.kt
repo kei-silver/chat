@@ -1,11 +1,9 @@
 package com.chatandpay.ws
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestParam
 
 @SpringBootApplication
 class WsApplication
@@ -24,5 +22,8 @@ class MessageController {
 	)
 
 	data class Message(val id: String?, val text: String)
+
 }
+
+
 
