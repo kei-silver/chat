@@ -15,10 +15,10 @@ data class ChatMessage(
     var id: ObjectId? = null,
 
     // 기존 속성들은 그대로 유지합니다
-    var chatRoomId: String,
+    var chatRoomId: Long,
     val message: String,
     val senderName: String,
-    val senderId: String,
+    val senderId: Long,
     val createdAt: Long = LocalDateTime.now().toEpochMillis()
 ) {
     companion object {

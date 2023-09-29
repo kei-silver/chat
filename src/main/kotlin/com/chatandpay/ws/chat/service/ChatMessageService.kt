@@ -4,16 +4,21 @@ package com.chatandpay.ws.chat.service
 import com.chatandpay.ws.chat.dto.ChatMessageDto
 import com.chatandpay.ws.chat.entity.ChatMessage
 import com.chatandpay.ws.chat.repository.ChatMessageRepository
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import org.apache.commons.logging.Log
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Service
 
 
-
-
 @Service
 class ChatMessageService (
+    private val logger: Logger = LoggerFactory.getLogger(ChatMessageService::class.java),
     private val chatMessageRepository: ChatMessageRepository,
-    private val mongoTemplate: MongoTemplate
+    private val mongoTemplate: MongoTemplate,
+    private val userServer: UserServer
     ){
 
 
@@ -48,10 +53,24 @@ class ChatMessageService (
     }
 
 
-    fun getChatMessage(chatMessageDto: ChatMessageDto): ChatMessage  {
-        return ChatMessage.create(chatMessageDto)
+    @CircuitBreaker(name = "ChatMessageService", fallbackMethod = "fallback")
+    fun getChatMessage(): ChatMessage? {
+        val user = userServer.getUserInNoReponse()
+        if(user != null){
+            logger.error("호출 성공")
+            return ChatMessage(senderId = 1, senderName = "kei", message = "message", chatRoomId = 1)
+        }else{
+            return null
+        }
     }
-
+    fun fallback(ex: Throwable):ChatMessage? {
+        logger.error("응답 실패")
+        return null
+    }
+    fun fallback(ex: CallNotPermittedException):ChatMessage? {
+        logger.error("서킷 브레이커 open")
+        return null
+    }
 
 
 }

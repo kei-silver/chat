@@ -12,6 +12,7 @@
 //import org.springframework.data.redis.listener.adapter.MessageListenerAdapter
 //import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 //import org.springframework.data.redis.serializer.StringRedisSerializer
+//import org.springframework.messaging.simp.SimpMessagingTemplate
 //
 //
 //@Configuration
@@ -33,16 +34,16 @@
 //    }
 //
 //
-////    @Bean
-////    fun redisMessageListener(): MessageListenerAdapter? {
-////        return MessageListenerAdapter(RedisMessageSubscriber())
-////    }
+//    @Bean
+//    fun redisMessageListener(template: SimpMessagingTemplate): MessageListenerAdapter? {
+//        return MessageListenerAdapter(RedisMessageSubscriber(template))
+//    }
 //
 //    @Bean
-//    fun redisContainer(): RedisMessageListenerContainer? {
+//    fun redisContainer(template: SimpMessagingTemplate): RedisMessageListenerContainer? {
 //        val container = RedisMessageListenerContainer()
 //        container.setConnectionFactory(redisConnectionFactory())
-////        container.addMessageListener(redisMessageListener()!!, topic())
+//        container.addMessageListener(redisMessageListener(template)!!, topic())
 //        return container
 //    }
 //

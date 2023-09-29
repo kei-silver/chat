@@ -11,11 +11,11 @@ data class ChatUser(
 
     @Id
     @Field("_id", targetType = FieldType.OBJECT_ID)
-    var id: String? = null,
+    var id: Long? = null,
 
     var username: String,
 
-    var email: String,
+    var email: String? = null,
 
-    var createdAt: Long = System.currentTimeMillis()
+    var createdAt: Long? = System.currentTimeMillis()
 )

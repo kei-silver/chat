@@ -1,15 +1,16 @@
 package com.chatandpay.ws.chat.dto
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 
 
-data class ChatMessageDto(
-    val type: Type,
-    val chatRoomId: String,
-    val senderName: String,
-    val senderId: String,
-    val message: String,
-    val createdAt: Long
-
+data class ChatMessageDto @JsonCreator constructor(
+    @JsonProperty("type") val type: Type,
+    @JsonProperty("chatRoomId") val chatRoomId: Long,
+    @JsonProperty("senderName") val senderName: String,
+    @JsonProperty("senderId") val senderId: Long,
+    @JsonProperty("message") val message: String,
+    @JsonProperty("createdAt") val createdAt: Long
 ) {
     enum class Type {
         ENTER, COMMENT

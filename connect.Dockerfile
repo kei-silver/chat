@@ -10,3 +10,4 @@ RUN mkdir -p /usr/share/confluent-hub-components && \
 RUN confluent-hub install --no-prompt --verbose mongodb/kafka-connect-mongodb:latest
 
 ENV CONNECT_PLUGIN_PATH="/usr/share/java,/usr/share/confluent-hub-components"
+

@@ -260,7 +260,7 @@
         console.log(frame);
 
         var subscriptionId = 'sub-' + Math.random(); // 이거 uuid로 바꾸기
-            ws.subscribe("/topic/group/room" + vm.$data.roomId, function (message) {
+            ws.subscribe("/topic/group/room/" + vm.$data.roomId, function (message) {
                 var recv = JSON.parse(message.body);
                 console.log(recv);
                 vm.recvMessage(recv);
