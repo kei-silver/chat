@@ -1,11 +1,11 @@
-package com.chatandpay.ws.chat.service
+package com.chatandpay.ws.MSA.circuitBreakerPattern.user
 
 import com.chatandpay.ws.chat.entity.ChatUser
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
-class UserServer {
+class UserService {
 
     fun getUserInNoReponse():ChatUser {
         // 50% 확률로 응답이 없는 것을 시뮬레이션

@@ -16,9 +16,8 @@ import org.springframework.stereotype.Service
 @Service
 class ChatMessageService (
     private val logger: Logger = LoggerFactory.getLogger(ChatMessageService::class.java),
-    private val chatMessageRepository: ChatMessageRepository,
-    private val mongoTemplate: MongoTemplate,
-    private val userServer: UserServer
+    private val chatMessageRepository: ChatMessageRepository
+
     ){
 
 
@@ -50,26 +49,6 @@ class ChatMessageService (
 
         return ChatMessage.createEnterMessage(chatMessageDto)
 
-    }
-
-
-    @CircuitBreaker(name = "ChatMessageService", fallbackMethod = "fallback")
-    fun getChatMessage(): ChatMessage? {
-        val user = userServer.getUserInNoReponse()
-        if(user != null){
-            logger.error("호출 성공")
-            return ChatMessage(senderId = 1, senderName = "kei", message = "message", chatRoomId = 1)
-        }else{
-            return null
-        }
-    }
-    fun fallback(ex: Throwable):ChatMessage? {
-        logger.error("응답 실패")
-        return null
-    }
-    fun fallback(ex: CallNotPermittedException):ChatMessage? {
-        logger.error("서킷 브레이커 open")
-        return null
     }
 
 

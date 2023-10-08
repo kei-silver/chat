@@ -15,7 +15,7 @@ data class ChatMessage(
     var id: ObjectId? = null,
 
     // 기존 속성들은 그대로 유지합니다
-    var chatRoomId: Long,
+    var chatRoomId: String,
     val message: String,
     val senderName: String,
     val senderId: Long,

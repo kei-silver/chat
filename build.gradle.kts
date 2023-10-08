@@ -32,7 +32,7 @@ dependencies {
 	implementation("io.projectreactor.netty:reactor-netty:1.0.31")
 	implementation("io.netty:netty-all:4.1.68.Final")
 	implementation ("org.springframework.boot:spring-boot-starter-amqp")
-//	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.7")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.7")
 
 
 

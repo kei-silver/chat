@@ -3,10 +3,9 @@ package com.chatandpay.ws.chat.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-
 data class ChatMessageDto @JsonCreator constructor(
     @JsonProperty("type") val type: Type,
-    @JsonProperty("chatRoomId") val chatRoomId: Long,
+    @JsonProperty("chatRoomId") val chatRoomId: String,
     @JsonProperty("senderName") val senderName: String,
     @JsonProperty("senderId") val senderId: Long,
     @JsonProperty("message") val message: String,
@@ -20,6 +19,7 @@ data class ChatMessageDto @JsonCreator constructor(
 
         @JvmStatic
         fun createEnterMessage(chatMessageDto: ChatMessageDto): ChatMessageDto {
+
             return ChatMessageDto(
                 senderName = chatMessageDto.senderName,
                 senderId = chatMessageDto.senderId,
@@ -29,11 +29,5 @@ data class ChatMessageDto @JsonCreator constructor(
                 createdAt = chatMessageDto.createdAt
             )
         }
-
     }
 }
-
-
-
-
-

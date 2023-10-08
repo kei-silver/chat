@@ -27,12 +27,6 @@ class MessageController {
 
 	data class Message(val id: String?, val text: String)
 
-//	@GetMapping("/check-chat-server/{chatServerUrl}")
-//	fun checkChatServerHealth(@PathVariable chatServerUrl: String?): String? {
-//		return cir.checkChatServerHealth(chatServerUrl)
-//	}
-
-
 
 }
 
